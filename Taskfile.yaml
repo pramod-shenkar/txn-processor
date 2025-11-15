@@ -6,3 +6,6 @@ tasks:
   run:
     - docker compose -f ./deployment/docker/infra.docker-compose.yaml -f ./deployment/docker/app.docker-compose.yaml -f ./deployment/docker/otel.docker-compose.yaml down -v
     - docker compose -f ./deployment/docker/infra.docker-compose.yaml -f ./deployment/docker/app.docker-compose.yaml -f ./deployment/docker/otel.docker-compose.yaml up -d
+  
+  db:
+    - docker exec -it mariadb mariadb -u user -ppassword default
