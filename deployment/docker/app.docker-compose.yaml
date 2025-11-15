@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: ../..  
+      dockerfile: Dockerfile
+    container_name: txn-processor
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      keydb:
+        condition: service_healthy
+    env_file:
+      - ../config/docker.env
+    ports:
+      - "9999:9999"
+    restart: unless-stopped
+    networks:
+      - txn-processor-network
+
+
+networks:
+  txn-processor-network:
+    name: txn-processor-network

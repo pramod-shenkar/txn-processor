@@ -1,0 +1,8 @@
+version: '3.0'
+tasks:
+  build:
+    - docker build -t txn-processor:latest .
+    - docker run --rm --network txn-processor-network --env-file deployment/config/docker.env -p 9999:9999 -it txn-processor:latest
+  run:
+    - docker compose -f ./deployment/docker/infra.docker-compose.yaml -f ./deployment/docker/app.docker-compose.yaml -f ./deployment/docker/otel.docker-compose.yaml down -v
+    - docker compose -f ./deployment/docker/infra.docker-compose.yaml -f ./deployment/docker/app.docker-compose.yaml -f ./deployment/docker/otel.docker-compose.yaml up -d

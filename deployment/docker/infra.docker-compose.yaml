@@ -1,0 +1,63 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: default
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    command:
+      [
+        "mariadbd",
+        "--max_connections=500",
+        "--wait_timeout=600",
+        "--interactive_timeout=600"
+      ]
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-prootpass", "--silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+    networks:
+      - txn-processor-network
+
+  keydb:
+    image: eqalpha/keydb:latest
+    container_name: keydb
+    command:
+      [
+        "keydb-server",
+        "--loglevel", "warning",
+        "--appendonly", "yes",
+        "--server-threads", "4",
+        "--maxclients", "10000",
+        "--maxmemory", "1gb",
+        "--maxmemory-policy", "allkeys-lru"
+      ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - keydb_data:/data
+    healthcheck:
+      test: ["CMD", "keydb-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - txn-processor-network
+
+volumes:
+  mariadb_data:
+  keydb_data:
+
+networks:
+  txn-processor-network:
+    name: txn-processor-network
