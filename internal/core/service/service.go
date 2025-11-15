@@ -6,10 +6,13 @@ import (
 )
 
 type Service struct {
+	port.HealthService
 }
 
 var _ port.Inbound = new(Service)
 
 func New(dao port.Outbound, tracer tracing.Tracer) *Service {
-	return &Service{}
+	return &Service{
+		HealthService: NewHealthService(dao, tracer),
+	}
 }
