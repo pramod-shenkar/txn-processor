@@ -27,11 +27,24 @@ func SetupRoutes(app *fiber.App, inbound port.Inbound, tracer tracing.Tracer) {
 
 	v1 := app.Group("/v1")
 	HealthRoutes(v1, inbound)
-
-	// slog.Debug("Fiber server initialized", "routes", app.GetRoutes())
+	AccountRoutes(v1, inbound)
+	TransferRoutes(v1, inbound)
 }
 
 func HealthRoutes(router fiber.Router, svc port.HealthService) {
 	h := handler.NewHealthHandler(svc)
 	router.Get("/health", h.HealthCheck)
+}
+
+func AccountRoutes(router fiber.Router, svc port.AccountService) {
+	h := handler.NewAccountHandler(svc)
+	r := router.Group("/accounts")
+	r.Post("/", h.Create)
+	r.Get("/:id", h.Get)
+}
+
+func TransferRoutes(router fiber.Router, svc port.TransferService) {
+	h := handler.NewTransferHandler(svc)
+	r := router.Group("/transactions")
+	r.Post("/", h.Create)
 }

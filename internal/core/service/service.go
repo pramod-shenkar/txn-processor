@@ -7,12 +7,16 @@ import (
 
 type Service struct {
 	port.HealthService
+	port.AccountService
+	port.TransferService
 }
 
 var _ port.Inbound = new(Service)
 
 func New(dao port.Outbound, tracer tracing.Tracer) *Service {
 	return &Service{
-		HealthService: NewHealthService(dao, tracer),
+		HealthService:   NewHealthService(dao, tracer),
+		AccountService:  NewAccountService(dao, tracer),
+		TransferService: NewTransferService(dao, tracer),
 	}
 }
