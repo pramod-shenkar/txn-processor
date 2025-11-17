@@ -25,6 +25,10 @@ func SetupRoutes(app *fiber.App, inbound port.Inbound, tracer tracing.Tracer) {
 		app.Use(tracing.Middleware())
 	}
 
+	if tracer.IsEnabled() {
+		app.Use(tracing.Middleware())
+	}
+
 	v1 := app.Group("/v1")
 	HealthRoutes(v1, inbound)
 	AccountRoutes(v1, inbound)
