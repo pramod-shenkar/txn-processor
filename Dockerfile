@@ -28,6 +28,6 @@ RUN addgroup -g 65532 -S nonroot && \
 COPY --from=builder /app/server /app/server
 
 USER nonroot:nonroot
-EXPOSE 8080
+EXPOSE 9999
 
 ENTRYPOINT ["/app/server"]
