@@ -9,3 +9,20 @@ tasks:
   
   db:
     - docker exec -it mariadb mariadb -u user -ppassword default
+  
+  load:
+    cmds:
+    - |
+      curl -s -X POST http://localhost:9999/v1/accounts \
+      -H "Content-Type: application/json" \
+      -d '{"account_id":1001,"initial_balance":"50000"}' || true
+    - |
+      curl -s -X POST http://localhost:9999/v1/accounts \
+      -H "Content-Type: application/json" \
+      -d '{"account_id":1002,"initial_balance":"0"}' || true
+    - |
+      hey -n 5000 -c 5000 \
+      -m POST \
+      -H "Content-Type: application/json" \
+      -d '{ "source_account_id": 1001, "destination_account_id": 1002, "amount": "1" }' \
+      http://localhost:9999/v1/transfers

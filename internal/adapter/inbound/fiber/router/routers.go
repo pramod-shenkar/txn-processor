@@ -45,6 +45,6 @@ func AccountRoutes(router fiber.Router, svc port.AccountService) {
 
 func TransferRoutes(router fiber.Router, svc port.TransferService) {
 	h := handler.NewTransferHandler(svc)
-	r := router.Group("/transactions")
+	r := router.Group("/transfers")
 	r.Post("/", h.Create)
 }
